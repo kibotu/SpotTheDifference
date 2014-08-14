@@ -11,21 +11,22 @@ namespace Assets.Sources
 
         public void Start()
         {
-            UIEventListener.Get(Original.gameObject).onClick += (go) =>
-            {
-                RaycastHit hit;
-                if (!Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
-                    return;
-                
-                var tex = Original.mainTexture as Texture2D;
+            UIEventListener.Get(Original.gameObject).onClick += (go) => Debug.Log(GetUVHit(Original, camera));
+            UIEventListener.Get(Fake.gameObject).onClick += (go) => Debug.Log(GetUVHit(Fake, camera));
+        }
 
-                Vector3 pixelUV = Original.transform.InverseTransformPoint(hit.point);
-                pixelUV.x *= tex.width;
-                pixelUV.y *= tex.height;
+        public static Vector3 GetUVHit(UITexture go, Camera camera)
+        {
+            RaycastHit hit;
+            if (!Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
+                return new Vector3(-1,-1,-1);
 
-                Debug.Log(hit.textureCoord);
-            };
+            var tex = go.mainTexture as Texture2D;
 
+            var pixelUV = go.transform.InverseTransformPoint(hit.point);
+            pixelUV.x += go.width / 2f;
+            pixelUV.y += go.height / 2f;
+            return pixelUV;
         }
     }
 }

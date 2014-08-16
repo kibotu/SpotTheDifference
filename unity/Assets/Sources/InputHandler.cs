@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace Assets.Sources
 {
@@ -9,27 +14,67 @@ namespace Assets.Sources
         public Camera camera;
         public GameObject ShockWave;
         public Vector3 Position;
+        public TextAsset Levels;
+        public ArrayList Images;
+        public float ToleranceRadius;
+        public ImageData CurrentLevel;
+        public int CurrentLevelIndex;
+
+        public void Awake()
+        {
+            Images = new ArrayList();
+            var levels = JObject.Parse(Levels.ToString());
+
+            foreach (JObject images in levels["images"])
+            {
+                var image = new ImageData {Url = images["url"].ToString()};
+                image.SetDifferences(images["differences"].ToObject<List<JArray>>());
+                Images.Add(image);
+            }
+
+            SetLevel(CurrentLevelIndex);
+        }
+
+        private void SetLevel(int index)
+        {
+            CurrentLevel = (ImageData) Images[index];
+            
+            var tex = Resources.Load<Texture2D>("images/" + CurrentLevel.Url);
+            var dim = tex.GetImageSize();
+            Original.mainTexture = tex;
+            Original.SetDimensions((int)dim.x,(int)dim.y);
+
+            tex = Resources.Load<Texture2D>("images/" + CurrentLevel.Url + "2");
+            dim = tex.GetImageSize();
+            Fake.mainTexture = tex;
+            Fake.SetDimensions((int)dim.x, (int)dim.y);
+        }
 
         public void Start()
         {
-            UIEventListener.Get(Original.gameObject).onClick += (go) => Debug.Log( GetUVHit(Original));
-            UIEventListener.Get(Fake.gameObject).onClick += (go) => Debug.Log(GetUVHit(Fake));
+//            UIEventListener.Get(Original.gameObject).onClick += (go) => GetUVHit(Original);
+            UIEventListener.Get(Fake.gameObject).onClick += (go) => GetUVHit(Fake);
         }
 
         public Vector3 GetUVHit(UITexture go)
         {
             RaycastHit hit;
             if (!Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out hit))
-                return new Vector3(-1,-1,-1);
+                return new Vector3(-1, -1, -1);
 
-            var tex = go.mainTexture as Texture2D;
-
-            var shockwave = Instantiate(ShockWave) as GameObject;
-            shockwave.transform.position = hit.point;
-
+            // get uv coordinates for user action (local world space)
             var pixelUV = go.transform.InverseTransformPoint(hit.point);
-            pixelUV.x += go.width / 2f;
-            pixelUV.y += go.height / 2f;
+            pixelUV.x += go.width/2f;
+            pixelUV.y += go.height/2f;
+
+            // if actually hit do something fancy
+            if (CurrentLevel.HasHit(pixelUV, ToleranceRadius))
+            {
+                // world space
+                var shockwave = Instantiate(ShockWave) as GameObject;
+                shockwave.transform.position = hit.point;
+            }
+
             return pixelUV;
         }
     }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -8,22 +10,25 @@ namespace Assets.Sources
 
         public string Url;
         public Vector2 Dimension;
-        public Vector2[] Differences;
+        public ArrayList Spots;
 
         public void SetDifferences(List<JArray> differences)
         {
-            Differences = new Vector2[differences.Count];
+            Spots = new ArrayList(differences.Count);
 
-            for (var i = 0;  i < differences.Count; ++i)
-                Differences[i] = new Vector2((float) differences[i][0], (float) differences[i][1]); 
+            foreach (var t in differences)
+                Spots.Add(new Spot() { Position = new Vector2((float) t[0], (float) t[1]), IsAvailable = true });
         }
 
         public bool HasHit(Vector2 position, float tolerance)
         {
-            foreach (Vector2 value in Differences)
+            foreach (var t in Spots)
             {
-                Debug.Log(position + " ? " + value +" => " + Vector2.Distance(value, position) + " < " + tolerance);
-                if (Vector2.Distance(value, position) < tolerance) return true;
+                var spot = ((Spot) t);
+                if(!spot.IsAvailable) continue;
+                if (!(Vector2.Distance(spot.Position, position) < tolerance)) continue;
+                spot.IsAvailable = false;
+                return true;
             }
             return false;
         }
@@ -31,6 +36,11 @@ namespace Assets.Sources
         public void SetDimension(JArray dimension)
         {
             Dimension = new Vector2((float) dimension[0], (float) dimension[1]);
+        }
+
+        public bool HasSpotsLeft()
+        {
+            return Spots.Cast<Spot>().Any(spot => spot.IsAvailable);
         }
     }
 }

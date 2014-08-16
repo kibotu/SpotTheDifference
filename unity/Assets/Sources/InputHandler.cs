@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Net.Mime;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -18,21 +17,27 @@ namespace Assets.Sources
         public float ToleranceRadius;
         public ImageData CurrentLevel;
         public int CurrentLevelIndex;
+        public Player Player;
+        public GameObject SpotSprite;
 
         public void Awake()
+        {
+            ParseJson();
+            SetLevel(CurrentLevelIndex);
+        }
+
+        private void ParseJson()
         {
             Images = new ArrayList();
             var levels = JObject.Parse(Levels.ToString());
 
             foreach (JObject images in levels["images"])
             {
-                var image = new ImageData {Url = images["url"].ToString()};
+                var image = new ImageData { Url = images["url"].ToString() };
                 image.SetDifferences(images["differences"].ToObject<List<JArray>>());
                 image.SetDimension(images["dimension"].ToObject<JArray>());
                 Images.Add(image);
             }
-
-            SetLevel(CurrentLevelIndex);
         }
 
         private void SetLevel(int index)
@@ -72,7 +77,17 @@ namespace Assets.Sources
                 // world space
                 var shockwave = Instantiate(ShockWave) as GameObject;
                 shockwave.transform.position = hit.point;
+                
+                Player.SuccessHit();
+
+                var spotSprite = Instantiate(SpotSprite) as GameObject;
+                spotSprite.transform.position = hit.point;
+
+                if(!CurrentLevel.HasSpotsLeft())
+                    Application.LoadLevel("winscreen");
             }
+            else
+                Player.FailHit();
 
             return pixelUV;
         }

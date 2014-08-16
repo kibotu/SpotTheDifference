@@ -22,6 +22,7 @@ namespace Assets.Sources
 
         public void SetProgress(float percent)
         {
+            Percent = Mathf.Clamp01(percent);
             var pos = Bar.transform.localScale;
             pos.x = _startPosX*percent;
             Bar.transform.localScale = pos;

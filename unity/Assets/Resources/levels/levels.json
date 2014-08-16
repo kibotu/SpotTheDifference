@@ -2,6 +2,7 @@
   "images": [
     {
       "url": "testimage",
+	  "dimension" : [ 800, 588 ],
       "differences": [
         [
           745,

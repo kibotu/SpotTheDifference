@@ -6,8 +6,9 @@ namespace Assets.Sources
 {
     public class ImageData {
 
-        public Vector2[] Differences;
         public string Url;
+        public Vector2 Dimension;
+        public Vector2[] Differences;
 
         public void SetDifferences(List<JArray> differences)
         {
@@ -25,6 +26,11 @@ namespace Assets.Sources
                 if (Vector2.Distance(value, position) < tolerance) return true;
             }
             return false;
+        }
+
+        public void SetDimension(JArray dimension)
+        {
+            Dimension = new Vector2((float) dimension[0], (float) dimension[1]);
         }
     }
 }

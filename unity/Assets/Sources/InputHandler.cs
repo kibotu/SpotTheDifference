@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Net.Mime;
 using Newtonsoft.Json.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Sources
@@ -29,6 +28,7 @@ namespace Assets.Sources
             {
                 var image = new ImageData {Url = images["url"].ToString()};
                 image.SetDifferences(images["differences"].ToObject<List<JArray>>());
+                image.SetDimension(images["dimension"].ToObject<JArray>());
                 Images.Add(image);
             }
 
@@ -40,14 +40,13 @@ namespace Assets.Sources
             CurrentLevel = (ImageData) Images[index];
             
             var tex = Resources.Load<Texture2D>("images/" + CurrentLevel.Url);
-            var dim = tex.GetImageSize();
+
             Original.mainTexture = tex;
-            Original.SetDimensions((int)dim.x,(int)dim.y);
+            Original.SetDimensions((int)CurrentLevel.Dimension.x, (int)CurrentLevel.Dimension.y);
 
             tex = Resources.Load<Texture2D>("images/" + CurrentLevel.Url + "2");
-            dim = tex.GetImageSize();
             Fake.mainTexture = tex;
-            Fake.SetDimensions((int)dim.x, (int)dim.y);
+            Fake.SetDimensions((int)CurrentLevel.Dimension.x, (int)CurrentLevel.Dimension.y);
         }
 
         public void Start()

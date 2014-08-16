@@ -38,9 +38,9 @@ namespace Assets.Sources
             Dimension = new Vector2((float) dimension[0], (float) dimension[1]);
         }
 
-        public bool HasSpotsLeft()
+        public int HasSpotsLeft()
         {
-            return Spots.Cast<Spot>().Any(spot => spot.IsAvailable);
+            return Spots.Cast<Spot>().Count(spot => spot.IsAvailable);
         }
     }
 }

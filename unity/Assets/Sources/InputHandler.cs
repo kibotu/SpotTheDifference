@@ -19,6 +19,7 @@ namespace Assets.Sources
         public int CurrentLevelIndex;
         public Player Player;
         public GameObject SpotSprite;
+        public UILabel SpotsLeftLabel;
 
         public void Awake()
         {
@@ -83,13 +84,18 @@ namespace Assets.Sources
                 var spotSprite = Instantiate(SpotSprite) as GameObject;
                 spotSprite.transform.position = hit.point;
 
-                if(!CurrentLevel.HasSpotsLeft())
+                if (CurrentLevel.HasSpotsLeft() <= 0)
                     Application.LoadLevel("winscreen");
             }
             else
                 Player.FailHit();
 
             return pixelUV;
+        }
+
+        public void FixedUpdate()
+        {
+            SpotsLeftLabel.text = "" + CurrentLevel.HasSpotsLeft();
         }
     }
 }

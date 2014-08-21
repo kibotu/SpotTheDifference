@@ -23,16 +23,16 @@ namespace Assets.Sources
                 return new Rect();
 
             Boundings = new Rect();
-            floodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
+            FloodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
             return Boundings;
         }
 
         public static Rect Boundings = new Rect();
 
         // Recursively fills surrounding pixels of the old color  
-        private static void floodLoop(Texture2D img, int x, int y, Color fill, Color old)
+        private static void FloodLoop(Texture2D img, int x, int y, Color fill, Color old)
         {
-            var bounds = new Rect {width = img.width, height = img.height};
+//            var bounds = new Rect {width = img.width, height = img.height};
 
             // finds the left side, filling along the way  
             var fillL = x;
@@ -49,20 +49,21 @@ namespace Assets.Sources
             {
                 img.SetPixel(fillR, y, fill);
                 fillR++;
-            } while (fillR < bounds.width - 1 && img.GetPixel(fillR, y).Equals(old));
+            } while (fillR < img.width - 1 && img.GetPixel(fillR, y).Equals(old));
             fillR--;
 
             // checks if applicable up or down  
             for (var i = fillL; i <= fillR; i++)
             {
-                if (y > 0 && img.GetPixel(i, y - 1).Equals(old)) floodLoop(img, i, y - 1, fill, old);
-                if (y < bounds.height - 1 && img.GetPixel(i, y + 1).Equals(old)) floodLoop(img, i, y + 1, fill, old);
+                if (y > 0 && img.GetPixel(i, y - 1).Equals(old)) FloodLoop(img, i, y - 1, fill, old);
+                if (y < img.height - 1 && img.GetPixel(i, y + 1).Equals(old)) FloodLoop(img, i, y + 1, fill, old);
             }
 
-            Boundings.x = Math.Min(bounds.width, fillL);
+            Boundings.x = fillL;
             Boundings.width = Math.Max(Boundings.width, Math.Abs(fillL - fillR));
+            Boundings.height = 30;
             Boundings.y = Math.Max(Boundings.y, y);
-            Boundings.height = Math.Min(Boundings.y, y);
+//            Boundings.height = Math.Min(Boundings.y, y);
         }
     }
 }

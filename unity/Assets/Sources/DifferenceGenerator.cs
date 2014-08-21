@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -30,9 +28,6 @@ namespace Assets.Sources
                     var dif = Original.GetPixel(x, y) - Fake.GetPixel(x, y);
                     if (!(dif).Equals(_empty))
                     {
-                        // whenever there is a different color find bounding box
-//                        FloodFill.floodFill(tex, x, y);
-
                         dif.a = 1;
                         tex.SetPixel(x, y, Color.red);
                     } else {

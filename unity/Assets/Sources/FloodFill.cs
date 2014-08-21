@@ -22,12 +22,12 @@ namespace Assets.Sources
             if (old.Equals(fillColor))
                 return new Rect();
 
-            boundings = new Rect();
+            Boundings = new Rect();
             floodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
-            return boundings;
+            return Boundings;
         }
 
-        public static Rect boundings = new Rect();
+        public static Rect Boundings = new Rect();
 
         // Recursively fills surrounding pixels of the old color  
         private static void floodLoop(Texture2D img, int x, int y, Color fill, Color old)
@@ -59,10 +59,10 @@ namespace Assets.Sources
                 if (y < bounds.height - 1 && img.GetPixel(i, y + 1).Equals(old)) floodLoop(img, i, y + 1, fill, old);
             }
 
-            boundings.x = Math.Min(bounds.width, fillL);
-            boundings.width = Math.Max(boundings.width, Math.Abs(fillL - fillR));
-            boundings.y = Math.Max(boundings.y, y);
-            boundings.height = 50;
+            Boundings.x = Math.Min(bounds.width, fillL);
+            Boundings.width = Math.Max(Boundings.width, Math.Abs(fillL - fillR));
+            Boundings.y = Math.Max(Boundings.y, y);
+            Boundings.height = Math.Min(Boundings.y, y);
         }
     }
 }

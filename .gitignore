@@ -7,7 +7,6 @@ Library/
 Temp/
 Obj/
 out/
-*.meta
  
 # ===================================== #
 # Visual Studio / MonoDevelop generated #

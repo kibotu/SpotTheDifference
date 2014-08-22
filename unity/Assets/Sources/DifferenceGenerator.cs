@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Assets.Sources
     public class DifferenceGenerator : MonoBehaviour
     {
         public Texture2D Original;
+        public GameObject OriginalGameObject;
         public Texture2D Fake;
 
         public UITexture Replace;
@@ -59,6 +61,28 @@ namespace Assets.Sources
             tex.Apply();
 
             AmountSpots = Spots.Count;
+
+            CreateSprites();
+        }
+
+        private void CreateSprites()
+        {
+            var uitexture = OriginalGameObject.GetComponent<UITexture>();
+            Debug.Log(uitexture.width + " " + uitexture.height);
+            Debug.Log(uitexture.transform.position);
+            Debug.Log(OriginalGameObject.transform.position);
+            Debug.Log(uitexture.transform.localScale);
+
+
+            foreach (Rect frame in Spots)
+            {
+                var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f));
+                var spot = new GameObject("Spot");
+                spot.transform.parent = OriginalGameObject.transform;
+                
+                var spriteRenderer = spot.AddComponent<SpriteRenderer>();
+                spriteRenderer.sprite = s;
+            }
         }
 
         private bool IsAlreadyInFrame(Vector2 p)
@@ -74,7 +98,9 @@ namespace Assets.Sources
                 {
                     for (var x = (int)frame.xMin; x < frame.xMax; ++x)
                     {
-                        texture2D.SetPixel(x, y, Color.red);
+                        var c = Color.red;
+                        c.r -= texture2D.GetPixel(x, y).b;
+                        texture2D.SetPixel(x, y, c);
                     }
                 }
                 Debug.Log(frame);

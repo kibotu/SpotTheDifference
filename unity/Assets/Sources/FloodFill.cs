@@ -22,8 +22,15 @@ namespace Assets.Sources
             if (old.Equals(fillColor))
                 return new Rect();
 
-            Boundings = new Rect();
+            Boundings = new Rect(){x = img.width, y = img.height};
             FloodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
+            const float tolerance = 5f;
+            Boundings.x -= tolerance;
+            Boundings.y -= tolerance;
+            Boundings.height = (Boundings.height - Boundings.y) + tolerance;
+            Boundings.width = (Boundings.width - Boundings.x) + tolerance*2;
+            Boundings.x = Mathf.Clamp(Boundings.x, 0, Boundings.x);
+            Boundings.y = Mathf.Clamp(Boundings.y, 0, Boundings.y);
             return Boundings;
         }
 
@@ -32,15 +39,17 @@ namespace Assets.Sources
         // Recursively fills surrounding pixels of the old color  
         private static void FloodLoop(Texture2D img, int x, int y, Color fill, Color old)
         {
-//            var bounds = new Rect {width = img.width, height = img.height};
-
             // finds the left side, filling along the way  
             var fillL = x;
             do
             {
                 img.SetPixel(fillL, y, fill);
+                Boundings.x = Mathf.Min(Boundings.x, fillL);
+                Boundings.y = Mathf.Min(Boundings.y, y);
+                Boundings.height = Mathf.Max(Boundings.height, y);
+                Boundings.width = Mathf.Max(Boundings.width, x);
                 fillL--;
-            } while (fillL >= 0 && img.GetPixel(fillL, y).Equals(old));
+            } while (fillL >= 0 && EqualColorWithTolerance(img.GetPixel(fillL, y),old));
             fillL++;
 
             // find the right right side, filling along the way  
@@ -48,22 +57,27 @@ namespace Assets.Sources
             do
             {
                 img.SetPixel(fillR, y, fill);
+                //                Boundings.width = Mathf.Max(Boundings.width, Mathf.Abs(fillL - fillR));
+                Boundings.x = Mathf.Min(Boundings.x, fillL);
+                Boundings.y = Mathf.Min(Boundings.y, y);
+                Boundings.height = Mathf.Max(Boundings.height, y);
+                Boundings.width = Mathf.Max(Boundings.width, x);
                 fillR++;
-            } while (fillR < img.width - 1 && img.GetPixel(fillR, y).Equals(old));
+            } while (fillR < img.width - 1 && EqualColorWithTolerance(img.GetPixel(fillR, y),old));
             fillR--;
 
             // checks if applicable up or down  
             for (var i = fillL; i <= fillR; i++)
             {
-                if (y > 0 && img.GetPixel(i, y - 1).Equals(old)) FloodLoop(img, i, y - 1, fill, old);
-                if (y < img.height - 1 && img.GetPixel(i, y + 1).Equals(old)) FloodLoop(img, i, y + 1, fill, old);
+                if (y > 0 && EqualColorWithTolerance(img.GetPixel(i, y - 1),old)) FloodLoop(img, i, y - 1, fill, old);
+                if (y < img.height - 1 && EqualColorWithTolerance(img.GetPixel(i, y + 1),old)) FloodLoop(img, i, y + 1, fill, old);
             }
+        }
 
-            Boundings.x = fillL;
-            Boundings.width = Math.Max(Boundings.width, Math.Abs(fillL - fillR));
-            Boundings.height = 30;
-            Boundings.y = Math.Max(Boundings.y, y);
-//            Boundings.height = Math.Min(Boundings.y, y);
+        public static bool EqualColorWithTolerance(Color a, Color b)
+        {
+            // todo add tolerance
+            return a.Equals(b);
         }
     }
 }

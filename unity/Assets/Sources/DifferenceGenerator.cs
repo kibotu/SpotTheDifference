@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using HutongGames.Extensions;
 using UnityEngine;
 
 namespace Assets.Sources
@@ -69,17 +70,17 @@ namespace Assets.Sources
         {
             var uitexture = OriginalGameObject.GetComponent<UITexture>();
             Debug.Log(uitexture.width + " " + uitexture.height);
-            Debug.Log(uitexture.transform.position);
-            Debug.Log(OriginalGameObject.transform.position);
-            Debug.Log(uitexture.transform.localScale);
 
+            Bounds b = NGUIMath.CalculateAbsoluteWidgetBounds(uitexture.transform);
+            Debug.Log(b.size);
+            Debug.Log(uitexture.gameObject.transform.lossyScale);
+            Debug.Log(uitexture.gameObject.transform.localScale);
 
             foreach (Rect frame in Spots)
             {
                 var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f));
                 var spot = new GameObject("Spot");
-                spot.transform.parent = OriginalGameObject.transform;
-                
+                spot.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
                 var spriteRenderer = spot.AddComponent<SpriteRenderer>();
                 spriteRenderer.sprite = s;
             }

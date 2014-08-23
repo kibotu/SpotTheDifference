@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using HutongGames.Extensions;
 using UnityEngine;
 
@@ -64,6 +65,19 @@ namespace Assets.Sources
             AmountSpots = Spots.Count;
 
             CreateSprites();
+//            CreateUITexture();
+        }
+
+        private void CreateUITexture()
+        {
+            UIAtlas atlas  = new UIAtlas();
+
+            foreach (Rect frame in Spots)
+            {
+                var go = new GameObject("Spot");
+                var uiTex = go.AddComponent<UITexture>();
+                uiTex.mainTexture = Original;
+            }
         }
 
         private void CreateSprites()
@@ -73,11 +87,16 @@ namespace Assets.Sources
                 Debug.Log("c: " + corner);
             }
 
-            Debug.Log("dim: " + Replace.GetComponent<UITexture>().CalculateBounds(transform.parent));
+            Vector2 dim = new Vector2(Replace.GetComponent<UITexture>().width, Replace.GetComponent<UITexture>().height);
+
+            Debug.Log("dim: " + dim + " " + Replace.mainTexture.width + " " + Replace.mainTexture.height);
 
             foreach (Rect frame in Spots)
             {
-                Debug.Log(Replace.transform.TransformPoint(new Vector3(frame.width, frame.height * (1 + Camera.main.aspect), 1)));
+                var rect = new Rect(frame.x / Replace.width, frame.y / Replace.height, Replace.height / (float)Replace.mainTexture.width, Replace.height / (float)Replace.mainTexture.height);
+                Debug.Log(rect);
+
+//                Debug.Log(Replace.transform.TransformPoint(new Vector3(frame.width, frame.height * (1 + Camera.main.aspect), 1)));
                 var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f),128);
                 var spot = new GameObject("Spot");
                 spot.transform.localScale = Replace.transform.localScale;

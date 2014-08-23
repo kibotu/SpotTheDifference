@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using HutongGames.Extensions;
 using UnityEngine;
 
 namespace Assets.Sources
@@ -12,6 +9,7 @@ namespace Assets.Sources
         public Texture2D Original;
         public GameObject OriginalGameObject;
         public Texture2D Fake;
+        public Material Material;
 
         public UITexture Replace;
         public float Tolerance = 2f;
@@ -64,19 +62,26 @@ namespace Assets.Sources
 
             AmountSpots = Spots.Count;
 
-            CreateSprites();
-//            CreateUITexture();
+//            CreateSprites();
+            CreateUITexture();
         }
 
         private void CreateUITexture()
         {
-            UIAtlas atlas  = new UIAtlas();
+            var atlas = GetComponent<UIAtlas>();
+            atlas.spriteMaterial.mainTexture = Original;
 
-            foreach (Rect frame in Spots)
+            for (var index = 0; index < Spots.Count; index++)
             {
+                var frame = (Rect) Spots[index];
+                var sprite = new UISpriteData {name = "sprite" + index};
+                sprite.SetRect((int) frame.x, (int) frame.y, (int) frame.width, (int) frame.height);
+                atlas.spriteList.Add(sprite);
+
                 var go = new GameObject("Spot");
-                var uiTex = go.AddComponent<UITexture>();
-                uiTex.mainTexture = Original;
+                var uiTex = go.AddComponent<UISprite>();
+                uiTex.atlas = atlas;
+                uiTex.spriteName = "sprite" + index;
             }
         }
 

@@ -74,14 +74,20 @@ namespace Assets.Sources
             for (var index = 0; index < Spots.Count; index++)
             {
                 var frame = (Rect) Spots[index];
+//                var rect = new Rect(frame.x * 1024f/800f, frame.y * 512f/588f, frame.width * 1024f / 800f, frame.height * 512f / 588f);
+//                var rect = new Rect(frame.x * 800f / 1024f, frame.y * 588f / 512f, frame.width * 800f / 1024f, frame.height * 588f / 512f);
+                var rect = new Rect(frame.x, frame.y , frame.width , frame.height);
                 var sprite = new UISpriteData {name = "sprite" + index};
-                sprite.SetRect((int) frame.x, (int) frame.y, (int) frame.width, (int) frame.height);
+                sprite.SetRect((int)(rect.x), (int)(Original.height - rect.y - rect.height), (int)(rect.width), (int)(rect.height));
                 atlas.spriteList.Add(sprite);
 
                 var go = new GameObject("Spot");
                 var uiTex = go.AddComponent<UISprite>();
                 uiTex.atlas = atlas;
                 uiTex.spriteName = "sprite" + index;
+                uiTex.width = sprite.width;
+                uiTex.height = sprite.height;
+                go.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
             }
         }
 

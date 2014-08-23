@@ -87,25 +87,19 @@ namespace Assets.Sources
                 Debug.Log("c: " + corner);
             }
 
-            Vector2 dim = new Vector2(Replace.GetComponent<UITexture>().width, Replace.GetComponent<UITexture>().height);
-
-            Debug.Log("dim: " + dim + " " + Replace.mainTexture.width + " " + Replace.mainTexture.height);
+            Debug.Log("dim: " + Replace.mainTexture.width + " " + Replace.mainTexture.height);
 
             foreach (Rect frame in Spots)
             {
                 var rect = new Rect(frame.x / Replace.width, frame.y / Replace.height, Replace.height / (float)Replace.mainTexture.width, Replace.height / (float)Replace.mainTexture.height);
                 Debug.Log(rect);
 
-//                Debug.Log(Replace.transform.TransformPoint(new Vector3(frame.width, frame.height * (1 + Camera.main.aspect), 1)));
                 var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f),128);
                 var spot = new GameObject("Spot");
-                spot.transform.localScale = Replace.transform.localScale;
-                var pos = new Vector3(frame.x - (frame.width / 2f) , 0, 0);
-//                Debug.Log(pos);
-//                Debug.Log("replace: " + Replace.transform.TransformPoint(pos));
-//                Debug.Log("WorldToScreenPoint: " + Camera.main.WorldToScreenPoint(pos));
-//                Debug.Log("ScreenToWorldPoint: " + Camera.main.ScreenToWorldPoint(pos));
-                spot.transform.localPosition = Replace.GetComponent<UITexture>().worldCorners[1];// + Camera.main.ScreenToWorldPoint(new Vector3(frame.x,frame.y));
+//                spot.transform.localScale = Replace.transform.TransformPoint(new Vector3(frame.width, frame.height, 0));
+                spot.transform.localScale = Camera.main.ScreenToWorldPoint(new Vector3(frame.width, frame.height, 0));
+//                spot.transform.position = Replace.transform.TransformPoint(new Vector3(frame.x, frame.y, 0));
+                spot.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(frame.x, frame.y, 0));
                 var spriteRenderer = spot.AddComponent<SpriteRenderer>();
                 spriteRenderer.sprite = s;
             }

@@ -68,19 +68,25 @@ namespace Assets.Sources
 
         private void CreateSprites()
         {
-            var uitexture = OriginalGameObject.GetComponent<UITexture>();
-            Debug.Log(uitexture.width + " " + uitexture.height);
+            foreach (var corner in Replace.GetComponent<UITexture>().worldCorners)
+            {
+                Debug.Log("c: " + corner);
+            }
 
-            Bounds b = NGUIMath.CalculateAbsoluteWidgetBounds(uitexture.transform);
-            Debug.Log(b.size);
-            Debug.Log(uitexture.gameObject.transform.lossyScale);
-            Debug.Log(uitexture.gameObject.transform.localScale);
+            Debug.Log("dim: " + Replace.GetComponent<UITexture>().CalculateBounds(transform.parent));
 
             foreach (Rect frame in Spots)
             {
-                var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f));
+                Debug.Log(Replace.transform.TransformPoint(new Vector3(frame.width, frame.height * (1 + Camera.main.aspect), 1)));
+                var s = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f),128);
                 var spot = new GameObject("Spot");
-                spot.transform.localScale = new Vector3(0.5f,0.5f,0.5f);
+                spot.transform.localScale = Replace.transform.localScale;
+                var pos = new Vector3(frame.x - (frame.width / 2f) , 0, 0);
+//                Debug.Log(pos);
+//                Debug.Log("replace: " + Replace.transform.TransformPoint(pos));
+//                Debug.Log("WorldToScreenPoint: " + Camera.main.WorldToScreenPoint(pos));
+//                Debug.Log("ScreenToWorldPoint: " + Camera.main.ScreenToWorldPoint(pos));
+                spot.transform.localPosition = Replace.GetComponent<UITexture>().worldCorners[1];// + Camera.main.ScreenToWorldPoint(new Vector3(frame.x,frame.y));
                 var spriteRenderer = spot.AddComponent<SpriteRenderer>();
                 spriteRenderer.sprite = s;
             }

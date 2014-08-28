@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-public class Restart : MonoBehaviour {
+namespace Assets.Sources
+{
+    public class Restart : MonoBehaviour {
 
 
-    public void OnClick()
-    {
-        Application.LoadLevel("init");
+        public void OnClick()
+        {
+            Application.LoadLevel("Game");
+        }
     }
 }

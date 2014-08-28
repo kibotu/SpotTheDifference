@@ -80,8 +80,8 @@ namespace Assets.Sources
 
         public static bool EqualColorWithTolerance(Color a, Color b)
         {
-            return a.Equals(b);
-//            return Mathf.Abs(NGUIMath.ColorToInt(a) - NGUIMath.ColorToInt(b)) < 1000 ;
+//            return a.Equals(b);
+            return Mathf.Abs(NGUIMath.ColorToInt(a) - NGUIMath.ColorToInt(b)) < 1000;
         }
     }
 }

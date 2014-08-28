@@ -24,11 +24,11 @@ namespace Assets.Sources
 
             Boundings = new Rect(){x = img.width, y = img.height};
             FloodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
-            const float tolerance = 5f;
+            const float tolerance = 0f;
             Boundings.x -= tolerance;
             Boundings.y -= tolerance;
             Boundings.height = (Boundings.height - Boundings.y) + tolerance;
-            Boundings.width = (Boundings.width - Boundings.x) + tolerance*2;
+            Boundings.width = Boundings.width - Boundings.x;
             Boundings.x = Mathf.Clamp(Boundings.x, 0, Boundings.x);
             Boundings.y = Mathf.Clamp(Boundings.y, 0, Boundings.y);
             return Boundings;
@@ -48,6 +48,7 @@ namespace Assets.Sources
                 Boundings.y = Mathf.Min(Boundings.y, y);
                 Boundings.height = Mathf.Max(Boundings.height, y);
                 Boundings.width = Mathf.Max(Boundings.width, x);
+                Boundings.width = Mathf.Max(Boundings.width, fillL);
                 fillL--;
             } while (fillL >= 0 && EqualColorWithTolerance(img.GetPixel(fillL, y),old));
             fillL++;
@@ -57,11 +58,13 @@ namespace Assets.Sources
             do
             {
                 img.SetPixel(fillR, y, fill);
-                //                Boundings.width = Mathf.Max(Boundings.width, Mathf.Abs(fillL - fillR));
+
                 Boundings.x = Mathf.Min(Boundings.x, fillL);
                 Boundings.y = Mathf.Min(Boundings.y, y);
                 Boundings.height = Mathf.Max(Boundings.height, y);
                 Boundings.width = Mathf.Max(Boundings.width, x);
+                Boundings.width = Mathf.Max(Boundings.width, fillL);
+                Boundings.width = Mathf.Max(Boundings.width, fillR);
                 fillR++;
             } while (fillR < img.width - 1 && EqualColorWithTolerance(img.GetPixel(fillR, y),old));
             fillR--;
@@ -72,12 +75,13 @@ namespace Assets.Sources
                 if (y > 0 && EqualColorWithTolerance(img.GetPixel(i, y - 1),old)) FloodLoop(img, i, y - 1, fill, old);
                 if (y < img.height - 1 && EqualColorWithTolerance(img.GetPixel(i, y + 1),old)) FloodLoop(img, i, y + 1, fill, old);
             }
+
         }
 
         public static bool EqualColorWithTolerance(Color a, Color b)
         {
-            // todo add tolerance
             return a.Equals(b);
+//            return Mathf.Abs(NGUIMath.ColorToInt(a) - NGUIMath.ColorToInt(b)) < 1000 ;
         }
     }
 }

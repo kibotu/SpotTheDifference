@@ -57,7 +57,7 @@ public class PlaygroundBrushPresetInspectorC : Editor {
 		// Detail
 		EditorGUILayout.PropertyField(detail, new GUIContent(
 			"Brush Detail", 
-			"The detail level of this brush")
+			"The detail textures of this brush")
 		);
 		
 		// Distance

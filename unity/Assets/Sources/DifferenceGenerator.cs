@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,73 +16,99 @@ namespace Assets.Sources
 
         private static readonly Color TransparentColor = new Color(0, 0, 0, 0);
 
-        public Texture2D Level;
+//        public Texture2D Level;
         public Rect OriginalRect;
         public Rect FakeRect;
+        public Rect DifferenceRect;
         public Vector3 ImageScale;
         public bool ShowDifferences;
+        public Sprite sprite;
+        public Texture2D spriteTex;
+        public Texture2D LevelTex;
 
         public void Awake()
         {
-            Debug.Log(Original.width + " " + Original.height);
-            Debug.Log(Level.width + " " + Level.height);
+            var Level = GameObject.Find("KeepBetweenScenes").GetComponent<Level>();
+            LevelTex = Level.Textures[Level.Current];
+            Debug.Log(LevelTex.width + " " + LevelTex.height);
 
-//            OriginalRect.y = Level.height - OriginalRect.y;
-//            FakeRect.y = Level.height - FakeRect.y;
+            OringalReplace.sprite = Sprite.Create(LevelTex, new Rect(OriginalRect.x, OriginalRect.y, OriginalRect.width, OriginalRect.height), new Vector2(0.5f, 0.5f));
+            Replace.sprite = ShowDifferences
+                ? Sprite.Create(LevelTex, new Rect(DifferenceRect.x, DifferenceRect.y, DifferenceRect.width, DifferenceRect.height), new Vector2(0.5f, 0.5f))
+                : Sprite.Create(LevelTex, new Rect(FakeRect.x, FakeRect.y, FakeRect.width, FakeRect.height), new Vector2(0.5f, 0.5f));
 
-            // original
-            var originalTex = new Texture2D((int)OriginalRect.width, (int)OriginalRect.height);
-            for (var y = 0; y < originalTex.height; ++y)
-            {
-                for (var x = 0; x < originalTex.width; ++x)
-                {
-                    originalTex.SetPixel(x, y,Level.GetPixel((int)(x+OriginalRect.x),(int)(y+OriginalRect.y)));
-                }
-            }
-
-            OringalReplace.rectTransform.sizeDelta = new Vector2(originalTex.width, originalTex.height);
-            OringalReplace.rectTransform.localScale = ImageScale;
-            originalTex.Apply();
-            Original = originalTex;
-            OringalReplace.sprite = Sprite.Create(originalTex, new Rect(0, 0, originalTex.width, originalTex.height), new Vector2(0.5f, 0.5f), 128);
-
-
-            // fake
-
-            var fakeTex = new Texture2D((int)FakeRect.width, (int)FakeRect.height);
-            for (var y = 0; y < fakeTex.height; ++y)
-            {
-                for (var x = 0; x < fakeTex.width; ++x)
-                {
-                    fakeTex.SetPixel(x, y, Level.GetPixel((int)(x + FakeRect.x), (int)(y + FakeRect.y)));
-                }
-            }
-
-            Replace.rectTransform.sizeDelta = new Vector2(fakeTex.width, fakeTex.height);
-            Replace.rectTransform.localScale = ImageScale;
-            fakeTex.Apply();
-            Fake = fakeTex;
-            Replace.sprite = Sprite.Create(fakeTex, new Rect(0, 0, fakeTex.width, fakeTex.height), new Vector2(0.5f, 0.5f), 128);
-
+            OringalReplace.transform.localScale = ImageScale;
+            Replace.transform.localScale = ImageScale;
 
             // create spots and sprites
-            var tex = new Texture2D(Original.width, Original.height);
-            CreateSpots(tex);
+            Original = OringalReplace.sprite.Crop();
+            Fake = Replace.sprite.Crop();
 
-            DrawFrames(tex);
-            if(ShowDifferences)Replace.sprite = Sprite.Create(tex, Replace.sprite.rect, new Vector2(0.5f, 0.5f), 128);
+            Debug.Log("Orig: " + Original.width + " " + Original.height);
+            Debug.Log("Fake: " + Fake.width + " " + Fake.height);
 
-            tex.Apply();
-//            CreateSprites();
+            CreateMoochiSpots();
+            CreateSprites();
         }
 
-        private void CreateSpots(Texture2D tex)
+        private void CreateMoochiSpots()
         {
-            for (var y = 0; y < Original.height; ++y)
+            var d = Sprite.Create(LevelTex,
+                new Rect(DifferenceRect.x, DifferenceRect.y, DifferenceRect.width, DifferenceRect.height),
+                new Vector2(0.5f, 0.5f), 128);
+
+            var dTex = d.Crop();
+
+            Debug.Log("Fake: " + dTex.width + " " + dTex.height);
+
+            for (var y = 0; y < dTex.height; ++y)
             {
-                for (var x = 0; x < Original.width; ++x)
+                for (var x = 0; x < dTex.width ; ++x)
                 {
-                    var dif = Original.GetPixel(x, y) - Fake.GetPixel(x, y);
+                    var c = dTex.GetPixel(x, y);
+                    if (c.r < 0.9f || c.g > 0.1f || c.b > 0.1f || c.a < 1f)
+                        continue;
+                    var bounds = FloodFill.floodFill(dTex, Color.blue, new Vector2(x, y));
+                    if (!bounds.Equals(new Rect()))
+                        SpotFrames.Add(bounds);
+                }
+            }
+
+            Debug.Log(SpotFrames.Count);
+
+            dTex.Apply();
+
+            spriteTex = dTex;
+
+            sprite = Sprite.Create(dTex,
+                new Rect(0, 0, dTex.width, dTex.height),
+                new Vector2(0.5f, 0.5f),128);
+
+            if (ShowDifferences) Replace.sprite = sprite;
+        }
+
+        private void CreateSpritesFromAlmostIdenticalImages()
+        {
+            var tex = new Texture2D(Original.width, Original.height);
+            SpotFrames = CreateSpots(Original, Fake, ref tex);
+
+            DrawFrames(tex);
+            if (ShowDifferences) Replace.sprite = Sprite.Create(tex, Replace.sprite.rect, new Vector2(0.5f, 0.5f));
+
+            tex.Apply();
+            CreateSprites();
+        }
+
+        public static ArrayList CreateSpots(Texture2D original, Texture2D fake, ref Texture2D tex)
+        {
+            if (original.width != fake.width || original.height != fake.height)
+                throw new ArgumentException("Not identical dimensions. " + "[" + original.width + ", " + original.height + "] != " + "[" + fake.width +  ", " + fake.height + "]");
+
+            for (var y = 0; y < original.height; ++y)
+            {
+                for (var x = 0; x < original.width; ++x)
+                {
+                    var dif = original.GetPixel(x, y) - fake.GetPixel(x, y);
                     if (!(dif).Equals(TransparentColor))
                     {
                         dif.a = 1;
@@ -94,17 +121,21 @@ namespace Assets.Sources
                 }
             }
 
-            for (var y = 0; y < Original.height; ++y)
+            var spots = new ArrayList();
+
+            for (var y = 0; y < original.height; ++y)
             {
-                for (var x = 0; x < Original.width; ++x)
+                for (var x = 0; x < original.width; ++x)
                 {
-                    var dif = Original.GetPixel(x, y) - Fake.GetPixel(x, y);
+                    var dif = original.GetPixel(x, y) - fake.GetPixel(x, y);
                     if ((dif).Equals(TransparentColor)) continue;
                     var bounds = FloodFill.floodFill(tex, Color.blue, new Vector2(x, y));
                     if (!bounds.Equals(new Rect()))
-                        SpotFrames.Add(bounds);
+                        spots.Add(bounds);
                 }
             }
+
+            return spots;
         }
 
         private void CreateSprites()
@@ -118,7 +149,15 @@ namespace Assets.Sources
                 var frame = (Rect) SpotFrames[index];
                 var image = new GameObject("Spot").AddComponent<Image>();
                 image.transform.parent = Replace.transform;
-                image.sprite = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f), 128);
+                try
+                {
+                    if (frame == null) continue;
+                    image.sprite = Sprite.Create(Original, frame, new Vector2(0.5f, 0.5f));
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(index + " " + frame);
+                }
                 image.rectTransform.anchorMin = new Vector2(0, 0);
                 image.rectTransform.anchorMax = new Vector2(0, 0);
                 image.rectTransform.sizeDelta = new Vector2(frame.width, frame.height);

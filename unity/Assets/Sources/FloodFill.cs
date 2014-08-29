@@ -24,13 +24,15 @@ namespace Assets.Sources
 
             Boundings = new Rect(){x = img.width, y = img.height};
             FloodLoop(img, (int)loc.x, (int)loc.y, fillColor, old);
-            const float tolerance = 0f;
+            const float tolerance = 15f;
             Boundings.x -= tolerance;
             Boundings.y -= tolerance;
             Boundings.height = (Boundings.height - Boundings.y) + tolerance;
-            Boundings.width = Boundings.width - Boundings.x;
-            Boundings.x = Mathf.Clamp(Boundings.x, 0, Boundings.x);
-            Boundings.y = Mathf.Clamp(Boundings.y, 0, Boundings.y);
+            Boundings.width = (Boundings.width - Boundings.x) + tolerance;
+            Boundings.x = Mathf.Clamp(Boundings.x, 0, img.width);
+            Boundings.y = Mathf.Clamp(Boundings.y, 0, img.height);
+            Boundings.width = Mathf.Clamp(Boundings.width, 0, img.width);
+            Boundings.height = Mathf.Clamp(Boundings.height, 0, img.height);
             return Boundings;
         }
 
@@ -80,8 +82,13 @@ namespace Assets.Sources
 
         public static bool EqualColorWithTolerance(Color a, Color b)
         {
+            if (Mathf.Abs(a.r - b.r) < 0.2f)
+            {
+                return Mathf.Abs(a.g - b.g) < 0.1f && Mathf.Abs(a.b - b.b) < 0.1f;
+            }
+            return false;
+
 //            return a.Equals(b);
-            return Mathf.Abs(NGUIMath.ColorToInt(a) - NGUIMath.ColorToInt(b)) < 1000;
         }
     }
 }

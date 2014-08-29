@@ -12,10 +12,12 @@ namespace Assets.Sources
         public int Hits;
         public Image[] Stars;
         public Image [] Spots;
+        public Level Level;
 
-        public void Start ()
+        public void Awake ()
         {
             CurrentTries = Tries;
+            Debug.Log("current tries: " + CurrentTries);
         }
 
         public void SuccessHit()
@@ -25,7 +27,11 @@ namespace Assets.Sources
             ++Hits;
 
             if (Hits >= Spots.Count())
+            {
+                CurrentTries = Tries;
+                GameObject.Find("KeepBetweenScenes").GetComponent<Level>().Current++;
                 Application.LoadLevel("winscreen");
+            }
         }
 
         public void FailHit()

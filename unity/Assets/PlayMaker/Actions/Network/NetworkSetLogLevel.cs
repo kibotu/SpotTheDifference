@@ -8,10 +8,10 @@ using UnityEngine;
 namespace HutongGames.PlayMaker.Actions
 {
 	[ActionCategory(ActionCategory.Network)]
-	[Tooltip("Set the log level for network messages. Default is Off.\n\nOff: Only report errors, otherwise silent.\n\nInformational: Report informational messages like connectivity events.\n\nFull: Full debug level logging down to each individual message being reported.")]
+	[Tooltip("Set the log textures for network messages. Default is Off.\n\nOff: Only report errors, otherwise silent.\n\nInformational: Report informational messages like connectivity events.\n\nFull: Full debug textures logging down to each individual message being reported.")]
 	public class NetworkSetLogLevel : FsmStateAction
 	{	
-		[Tooltip("The log level")]
+		[Tooltip("The log textures")]
 		public NetworkLogLevel logLevel;
 
 

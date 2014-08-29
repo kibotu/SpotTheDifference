@@ -861,7 +861,7 @@ public class iTween : MonoBehaviour{
 	/// <param name="target"> 
 	/// A <see cref="GameObject"/> to be the target of the animation which holds the AudioSource to be changed.
 	/// </param>
-	/// <param name="volume"> for the target level of volume.
+	/// <param name="volume"> for the target textures of volume.
 	/// A <see cref="System.Single"/>
 	/// </param>
 	/// <param name="pitch"> for the target pitch.
@@ -881,7 +881,7 @@ public class iTween : MonoBehaviour{
 	/// A <see cref="AudioSource"/> for which AudioSource to use.
 	/// </param> 
 	/// <param name="volume">
-	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target level of volume.
+	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target textures of volume.
 	/// </param>
 	/// <param name="pitch">
 	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target pitch.
@@ -983,7 +983,7 @@ public class iTween : MonoBehaviour{
 	/// <param name="target"> 
 	/// A <see cref="GameObject"/> to be the target of the animation which holds the AudioSource to be changed.
 	/// </param>
-	/// <param name="volume"> for the target level of volume.
+	/// <param name="volume"> for the target textures of volume.
 	/// A <see cref="System.Single"/>
 	/// </param>
 	/// <param name="pitch"> for the target pitch.
@@ -1003,7 +1003,7 @@ public class iTween : MonoBehaviour{
 	/// A <see cref="AudioSource"/> for which AudioSource to use.
 	/// </param> 
 	/// <param name="volume">
-	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target level of volume.
+	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target textures of volume.
 	/// </param>
 	/// <param name="pitch">
 	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target pitch.
@@ -1088,7 +1088,7 @@ public class iTween : MonoBehaviour{
 	/// A <see cref="AudioSource"/> for which AudioSource to use
 	/// </param> 
 	/// <param name="volume">
-	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target level of volume.
+	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target textures of volume.
 	/// </param>
 	/// <param name="pitch">
 	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target pitch.
@@ -4903,7 +4903,7 @@ public class iTween : MonoBehaviour{
 	/// A <see cref="AudioSource"/> for which AudioSource to use.
 	/// </param> 
 	/// <param name="volume">
-	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target level of volume.
+	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target textures of volume.
 	/// </param>
 	/// <param name="pitch">
 	/// A <see cref="System.Single"/> or <see cref="System.Double"/> for the target pitch.
@@ -4966,7 +4966,7 @@ public class iTween : MonoBehaviour{
 	/// A <see cref="GameObject"/> to be the target of the animation.
 	/// </param>
 	/// <param name="volume">
-	/// A <see cref="System.Single"/> for the target level of volume.
+	/// A <see cref="System.Single"/> for the target textures of volume.
 	/// </param>
 	/// <param name="pitch">
 	/// A <see cref="System.Single"/> for the target pitch.

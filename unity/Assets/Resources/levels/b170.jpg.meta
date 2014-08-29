@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: b6ec076d2c2c66d42b818d031eaf853e
+guid: 097c200770383df41a6f779c623d8240
 TextureImporter:
   fileIDToRecycleName:
-    21300000: b032
+    21300000: b170
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -22,7 +22,7 @@ TextureImporter:
   grayScaleToAlpha: 0
   generateCubemap: 0
   seamlessCubemap: 0
-  textureFormat: -3
+  textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
     filterMode: 2
@@ -42,10 +42,6 @@ TextureImporter:
   alphaIsTransparency: 1
   textureType: 5
   buildTargetSettings:
-  - buildTarget: Web
-    maxTextureSize: 1024
-    textureFormat: 3
-    compressionQuality: 50
   - buildTarget: Android
     maxTextureSize: 1024
     textureFormat: 3

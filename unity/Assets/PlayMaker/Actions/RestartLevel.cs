@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HutongGames.PlayMaker.Actions
 {
 	[ActionCategory(ActionCategory.Level)]
-	[Tooltip("Restarts current level.")]
+	[Tooltip("Restarts current textures.")]
 	public class RestartLevel : FsmStateAction
 	{
 	    public override void OnEnter()

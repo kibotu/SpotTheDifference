@@ -14,7 +14,7 @@ public class PlaygroundBrushPresetC : MonoBehaviour {
 	// Brush properties
 	public Texture2D texture;							// The texture to construct this Brush from
 	public float scale = 1f;							// The scale of this Brush
-	public BRUSHDETAILC detail;							// The detail level of this brush
+	public BRUSHDETAILC detail;							// The detail textures of this brush
 	public float distance = 10000f;						// The distance the brush reaches
 
 	// Paint properties

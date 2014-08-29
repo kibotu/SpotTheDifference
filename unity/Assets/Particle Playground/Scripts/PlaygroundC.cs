@@ -982,7 +982,7 @@ namespace ParticlePlayground {
 	public class PlaygroundBrushC {
 		public Texture2D texture;								// The texture to construct this Brush from
 		public float scale = 1f;								// The scale of this Brush (measured in Units)
-		public BRUSHDETAILC detail = BRUSHDETAILC.High;			// The detail level of this brush
+		public BRUSHDETAILC detail = BRUSHDETAILC.High;			// The detail textures of this brush
 		public float distance = 10000;							// The distance the brush reaches
 		[HideInInspector] public Color32[] color;				// Color data of this brush
 		[HideInInspector] public int colorLength;				// The length of color array

@@ -48,7 +48,6 @@
   <ItemGroup>
      <Compile Include="Assets\Resources\Detonator\Sample Supporting Emitters\Detonator Spray Helper.js" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text 2.shader" />
-     <None Include="Assets\PlayMaker\Readme.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text 1.shader" />
      <None Include="Assets\Particle Playground\Graphics\Shaders\VertexLit Color.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored 2.shader" />
@@ -63,19 +62,13 @@
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored 1.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored.shader" />
-     <None Include="Assets\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Text.shader" />
      <None Include="Assets\link.xml" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Packed.shader" />
      <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Packed 3.shader" />
-     <None Include="Assets\PlayMaker\Resources\PlayMakerAssemblies.txt" />
      <None Include="Assets\Particle Playground\Graphics\Shaders\Vertex Color.shader" />
-     <None Include="Assets\PlayMaker\Versions\readme.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
- </Reference>
- <Reference Include="PlayMaker">
- <HintPath>D:/programming/sandbox/spotthedifference/unity/Assets/PlayMaker/PlayMaker.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

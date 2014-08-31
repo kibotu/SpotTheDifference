@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
+using ParticlePlayground;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +14,8 @@ namespace Assets.Sources
         public int Hits;
         public Image[] Stars;
         public Image [] Spots;
-        public Level Level;
+        public PlaygroundParticlesC[] Particles;
+        public float finishDelay;
 
         public void Awake ()
         {
@@ -23,25 +26,33 @@ namespace Assets.Sources
         public void SuccessHit()
         {
             Debug.Log("Player Found something! O_O");
-            Stars[Hits].color = new Color(1,1,1,1);
-            ++Hits;
 
-            if (Hits >= Spots.Count())
+            if (Hits == Spots.Count())
             {
-                CurrentTries = Tries;
                 GameObject.Find("KeepBetweenScenes").GetComponent<Level>().Current++;
-                Application.LoadLevel("winscreen");
+                Promises.Promise.WithCoroutine<object>(FinishDelay(finishDelay, "winscreen"));
             }
+        }
+
+        public static IEnumerator FinishDelay(float delay, string scene)
+        {
+            yield return new WaitForSeconds(delay);
+            Application.LoadLevel(scene);
         }
 
         public void FailHit()
         {
+            // already won
+            if (Hits == Spots.Count())
+                return;
+
             --CurrentTries;
 
-            if (CurrentTries <= 0)
+            Camera.main.GetComponent<CameraShake>().DoShake();
+
+            if (CurrentTries == 0)
             {
-                Application.LoadLevel("losingscreen");
-                Debug.Log("Player Lost.");
+                Promises.Promise.WithCoroutine<object>(FinishDelay(finishDelay, "losingscreen"));
             }
         }
 
@@ -54,11 +65,22 @@ namespace Assets.Sources
                 image.enabled = true;
 
                 // world space
+                // star explosion
                 var shockwave = Instantiate(ShockWave) as GameObject;
                 var hitpos = hit.point;
-                hitpos.z = -10;
+                hitpos.z = -2;
                 shockwave.transform.position = hitpos;
 
+                // emitter
+                var pos = hit.point;
+                pos.z = -2;
+                Particles[Hits].transform.position = pos;
+
+                Particles[Hits].transform.gameObject.SetActive(true);
+
+                // highlight star color
+                Stars[Hits].color = new Color(1, 1, 1, 1);
+                ++Hits;
 
                 SuccessHit();
             }

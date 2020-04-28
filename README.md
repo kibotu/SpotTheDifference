@@ -3,4 +3,8 @@
 
 ### Introduction
 
-[![Screenshot](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot.png)](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot.png)[![Screenshot](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot2.png)](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot2.png)
+Two almost identical images where the user needs to spot all differences in order to advance. 
+
+[![Screenshot](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot.png)](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot.png)
+
+[![Screenshot](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot2.png)](https://raw.githubusercontent.com/kibotu/SpotTheDifference/master/screenshot2.png)

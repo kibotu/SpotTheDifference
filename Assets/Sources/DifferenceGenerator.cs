@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -26,15 +27,16 @@ namespace Assets.Sources
         public Sprite sprite;
         public Texture2D spriteTex;
 
-        public Level level;
-
         /**
          * Current Level Texture.
          */
         public Texture2D levelTex;
 
+        public Image[] stars;
+
         public void Awake()
         {
+            var level = GameObject.Find("KeepBetweenScenes").GetComponent<Level>();
             levelTex = level.textures[level.current];
             Debug.Log(levelTex.width + " " + levelTex.height);
 
@@ -65,6 +67,16 @@ namespace Assets.Sources
 
             CreateMoochiSpots();
             CreateSprites();
+            UpdateAvailableStars();
+        }
+
+        private void UpdateAvailableStars()
+        {
+            for (var index = 0; index < stars.Length; index++)
+            {
+                var star = stars[index];
+                star.gameObject.SetActive(index < spotFrames.Count);
+            }
         }
 
         private void CreateMoochiSpots()
@@ -77,12 +89,15 @@ namespace Assets.Sources
 
             Debug.Log("Fake: " + dTex.width + " " + dTex.height);
 
+            // tolerance
+            const float t = 20f;
+
             for (var y = 0; y < dTex.height; ++y)
             {
                 for (var x = 0; x < dTex.width; ++x)
                 {
                     var c = dTex.GetPixel(x, y);
-                    if (c.r < 0.9f || c.g > 0.1f || c.b > 0.1f || c.a < 1f)
+                    if (c.r < ((254f - t) / 255f) || c.g < ((36f - t) / 255f) || c.g > ((37f + t) / 255f) || c.b > ((0f + t) / 255f))
                         continue;
                     var bounds = FloodFill.floodFill(dTex, Color.blue, new Vector2(x, y));
                     if (!bounds.Equals(new Rect()))
@@ -168,11 +183,17 @@ namespace Assets.Sources
                 image.transform.SetParent(replace.transform);
                 try
                 {
+                    // clamping frame on image bounds
+                    frame = new Rect(x: Mathf.Clamp(frame.x, 0, original.width - frame.width),
+                        y: Mathf.Clamp(frame.y, 0, original.height - frame.height),
+                        width: frame.width,
+                        height: frame.height);
+
                     image.sprite = Sprite.Create(original, frame, new Vector2(0.5f, 0.5f));
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(index + " " + frame);
+                    Debug.Log(index + " " + frame + " " + e.Message);
                 }
 
                 var rectTransform = image.rectTransform;

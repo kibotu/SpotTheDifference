@@ -8,6 +8,7 @@ namespace Assets.Sources
 {
     public class Player : MonoBehaviour
     {
+        public PrefabsHolder prefabsHolder;
         public GameObject ShockWave;
         public int Tries;
         public int CurrentTries;
@@ -49,7 +50,7 @@ namespace Assets.Sources
 
             if (CurrentTries == 0)
             {
-                Promises.Promise.WithCoroutine<object>(FinishDelay(finishDelay, "losingscreen"));
+                Promises.Promise.WithCoroutine<object>(FinishDelay(finishDelay, "losescreen"));
             }
         }
 
@@ -71,9 +72,10 @@ namespace Assets.Sources
                 // emitter
                 var pos = hit.point;
                 pos.z = -2;
-                // Particles[Hits].transform.position = pos;
 
-                // Particles[Hits].transform.gameObject.SetActive(true);
+                var particles = Instantiate(prefabsHolder.starsParticles);
+                particles.transform.position = pos;
+                particles.SetActive(true);
 
                 // highlight star color
                 Stars[Hits].color = new Color(1, 1, 1, 1);

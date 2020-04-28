@@ -5,6 +5,10 @@ namespace Assets.Sources
 {
     public class Restart : MonoBehaviour
     {
-        public void OnClick() => SceneManager.LoadScene("Scenes/game");
+        public void OnClick()
+        {
+            Debug.Log("onclick");
+            SceneManager.LoadScene("Scenes/game");
+        }
     }
 }
